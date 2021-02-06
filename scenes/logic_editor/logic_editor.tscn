@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scenes/logic_editor/logic_nodes/logic_input.gd" type="Script" id=1]
+[ext_resource path="res://scenes/logic_editor/logic_nodes/logic_node.tscn" type="PackedScene" id=2]
+
+[node name="logic_editor" type="GraphEdit"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+right_disconnects = true
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="LogicNode" parent="." instance=ExtResource( 2 )]
+mouse_filter = 1
+script = ExtResource( 1 )
