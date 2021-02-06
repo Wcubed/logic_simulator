@@ -10,15 +10,15 @@ func _ready():
 	
 	title = "Input"
 	
-	_set_output_state(false)
+	_set_output_amount(1)
 
 
-func _set_output_state(state):
+func _set_output_state(idx: int, state: bool):
 	_checkbox.pressed = state
 	
-	._set_output_state([state])
+	._set_output_state(idx, state)
 
 
 
 func _on_Checkbox_toggled(button_pressed: bool):
-	_set_output_state(button_pressed)
+	_set_output_state(0, button_pressed)
