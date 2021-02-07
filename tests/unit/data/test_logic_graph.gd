@@ -17,9 +17,13 @@ func test_get_nodes():
 
 
 func test_add_node():
+	watch_signals(_graph)
+	
 	var node := LogicNode.new()
 	
 	var id: int = _graph.add_node(node)
+	
+	assert_signal_emitted_with_parameters(_graph, "node_added", [id])
 	
 	# Input and output id's are special.
 	assert_ne(id, _graph.INPUT_ID)

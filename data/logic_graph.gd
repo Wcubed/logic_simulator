@@ -1,5 +1,7 @@
 extends Object
 
+signal node_added(id)
+
 # Node ids for the input and output nodes, which always exist.
 # Each graph has exactly 1.
 const INPUT_ID := 0
@@ -19,7 +21,7 @@ var _input_state := [false, false, false, false]
 # Dictionary of node id's to their list of output states.
 # Get's updated after `evaluate()` is called.
 var _graph_eval_state := {}
-# Updated once `evaluete()` is called.
+# Updated once `evaluate()` is called.
 var _output_state := []
 
 
@@ -101,6 +103,7 @@ func add_node(node: LogicNode) -> int:
 	_next_id += 1
 	
 	_nodes[id] = node
+	emit_signal("node_added", id)
 	
 	return id
 

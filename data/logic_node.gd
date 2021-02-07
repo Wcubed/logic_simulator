@@ -17,6 +17,12 @@ func _ready():
 	pass # Replace with function body.
 
 
+# Title of this node (for identification)
+# Meant to be overridden by inheriting objects.
+func get_title() -> String:
+	return ""
+
+
 # Call to evaluate this nodes logic.
 # Should be overridden by inheriting objects.
 # `input`: Array of `bool` with the state of the input connections.
