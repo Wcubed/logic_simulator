@@ -13,7 +13,14 @@ func _ready():
 
 # Sets this graph ui up to display the state of the given graph.
 func display_graph(graph: Object):
+	if _graph != null:
+		_graph.disconnect("nodes_connected", self, "_on_graph_nodes_connected")
+		_graph.disconnect("nodes_disconnected", self, "_on_graph_nodes_disconnected")
+	
 	_graph = graph
+	
+	_graph.connect("nodes_connected", self, "_on_graph_nodes_connected")
+	_graph.connect("nodes_disconnected", self, "_on_graph_nodes_disconnected")
 	
 	for child in get_children():
 		if child is GraphNode:
@@ -36,5 +43,17 @@ func _create_node(id: int, node: LogicNode):
 	new_node.update_input_output_amounts(node)
 
 
+func _on_graph_nodes_connected(from: int, from_slot: int, to: int, to_slot: int):
+	connect_node(String(from), from_slot, String(to), to_slot)
+
+
+func _on_graph_nodes_disconnected(from: int, from_slot: int, to: int, to_slot: int):
+	disconnect_node(String(from), from_slot, String(to), to_slot)
+
+
 func _on_LogicGraphUi_connection_request(from: String, from_slot: int, to: String, to_slot: int):
 	_graph.connect_nodes(int(from), from_slot, int(to), to_slot)
+
+
+func _on_LogicGraphUi_disconnection_request(from: String, from_slot: int, to: String, to_slot: int):
+	_graph.disconnect_nodes(int(from), from_slot, int(to), to_slot)

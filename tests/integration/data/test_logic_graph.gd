@@ -11,6 +11,8 @@ func before_each():
 
 
 func test_connect_and_disconnect_nodes():
+	watch_signals(_graph)
+	
 	var and_node: LogicNode = And.new()
 	var not_node: LogicNode = Not.new()
 	
@@ -18,6 +20,7 @@ func test_connect_and_disconnect_nodes():
 	var not_id: int = _graph.add_node(not_node)
 	
 	_graph.connect_nodes(and_id, 0, not_id, 0)
+	assert_signal_emitted_with_parameters(_graph, "nodes_connected", [and_id, 0, not_id, 0])
 	
 	var and_outputs = and_node.get_outputs()
 	var not_inputs = not_node.get_inputs()
@@ -29,6 +32,7 @@ func test_connect_and_disconnect_nodes():
 	assert_eq(not_inputs[0]["slot"], 0)
 	
 	_graph.disconnect_nodes(and_id, 0, not_id, 0)
+	assert_signal_emitted_with_parameters(_graph, "nodes_disconnected", [and_id, 0, not_id, 0])
 	
 	assert_eq(and_outputs[0].size(), 0)
 	assert_eq(not_inputs[0], null)

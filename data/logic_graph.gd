@@ -1,6 +1,8 @@
 extends Object
 
 signal node_added(id)
+signal nodes_connected(from_id, from_slot, to_id, to_slot)
+signal nodes_disconnected(from_id, from_slot, to_id, to_slot)
 
 # Node ids for the input and output nodes, which always exist.
 # Each graph has exactly 1.
@@ -131,6 +133,10 @@ func connect_nodes(first_id: int, output_slot: int, second_id: int, input_slot):
 	
 	first_node.connect_output(output_slot, second_id, input_slot)
 	second_node.connect_input(input_slot, first_id, output_slot)
+	
+	emit_signal("nodes_connected", first_id, output_slot, second_id, input_slot)
+
+
 
 
 func disconnect_nodes(first_id: int, output_slot: int, second_id: int, input_slot):
@@ -150,3 +156,5 @@ func disconnect_nodes(first_id: int, output_slot: int, second_id: int, input_slo
 	
 	first_node.disconnect_output(output_slot, second_id, input_slot)
 	second_node.disconnect_input(input_slot)
+	
+	emit_signal("nodes_disconnected", first_id, output_slot, second_id, input_slot)
