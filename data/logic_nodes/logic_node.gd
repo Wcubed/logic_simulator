@@ -10,41 +10,20 @@ var _inputs = []
 # If slot has no connections it has: `[]`
 # An output can be connected to multiple inputs.
 var _outputs = []
-# Boolean values for the current output states.
-var _outputs_state = []
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
 
 
-# Call to evaluate this nodes logic and update its outputs_state.
+# Call to evaluate this nodes logic.
 # Should be overridden by inheriting objects.
-func evaluate():
-	pass
-
-
-# Evaluates the input connections and returns the current status.
-func _get_inputs_state() -> Array:
-	var state := []
-	for i in get_inputs_amount():
-		state.append(false)
-	
-	for i in state.size():
-		if _inputs[i] != null:
-			var other: LogicNode = _inputs[i]["node"]
-			state[i] = other.get_output_state(_inputs[i]["slot"])
-	
-	return state
-
-
-# Get's the current state of the output slots.
-# If the given slot does not exist, it always returns false.
-func get_output_state(slot: int) -> bool:
-	if slot >= get_outputs_amount() || slot < 0:
-		return false
-	else:
-		return _outputs_state[slot]
+# `input`: Array of `bool` with the state of the input connections.
+#                should have the same size as `get_inputs_amount()`.
+# `return`: Array of `bool` with the state of the outputs.
+func evaluate(input: Array) -> Array:
+	return []
 
 
 func set_inputs_amount(amount: int):
@@ -63,17 +42,11 @@ func set_outputs_amount(amount: int):
 	#       to any slots we will  remove.
 	
 	_outputs.resize(amount)
-	_outputs_state.resize(amount)
 	
 	# Outputs without connections get an empty list.
 	for i in _outputs.size():
 		if _outputs[i] == null:
 			_outputs[i] = []
-	
-	# Default output state = false.
-	for i in _outputs_state.size():
-		if _outputs_state[i] == null:
-			_outputs_state[i] = false
 
 
 func get_inputs_amount() -> int:

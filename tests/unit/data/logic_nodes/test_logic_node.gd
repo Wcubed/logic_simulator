@@ -130,31 +130,3 @@ func test_disconnect_output():
 	var outputs := _logic.get_outputs()
 	assert_eq(outputs.size(), 1)
 	assert_eq(outputs[0], [])
-
-
-func test_get_output_state_of_nonexistent_outputs():
-	assert_false(_logic.get_output_state(1))
-	assert_false(_logic.get_output_state(17))
-	assert_false(_logic.get_output_state(-10))
-
-
-func test_get_output_state():
-	_logic.set_outputs_amount(2)
-	_logic._outputs_state = [false, true]
-	
-	assert_false(_logic.get_output_state(0))
-	assert_true(_logic.get_output_state(1))
-
-
-func test_get_inputs_state():
-	var other_logic := LogicNode.new()
-	other_logic.set_outputs_amount(2)
-	
-	_logic.set_inputs_amount(2)
-	_logic.connect_input(0, other_logic, 0)
-	_logic.connect_input(1, other_logic, 1)
-	
-	assert_eq(_logic._get_inputs_state(), [false, false])
-	
-	other_logic._outputs_state = [true, false]
-	assert_eq(_logic._get_inputs_state(), [true, false])
