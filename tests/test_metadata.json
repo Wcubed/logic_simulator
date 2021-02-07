@@ -1,9 +1,0 @@
-{
-	"res://tests/unit/logic_editor/logic_nodes/test_logic_input.gd": {
-		"path": "res://tests/unit/logic_editor/logic_nodes/test_logic_input.gd",
-		"tags": [
-
-		],
-		"passing": true
-	}
-}
