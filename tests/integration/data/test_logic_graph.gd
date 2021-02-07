@@ -1,6 +1,5 @@
 extends "res://addons/gut/test.gd"
 
-var InputNode := load("res://data/logic_nodes/logic_input.gd")
 var And := load("res://data/logic_nodes/logic_and.gd")
 var Not := load("res://data/logic_nodes/logic_not.gd")
 
@@ -72,8 +71,32 @@ func test_simple_evaluate():
 	
 	_graph.set_input_state(0, true)
 	_graph.evaluate()
-	assert_true(_graph.get_output_state(0))
+	assert_true(_graph.get_output_state()[0])
 	
 	_graph.set_input_state(0, false)
 	_graph.evaluate()
-	assert_false(_graph.get_output_state(0))
+	assert_false(_graph.get_output_state()[0])
+
+var _more_complex_eval_params = [
+	[false, false, false], 
+	[false, true, true],
+	[true, false, false],
+	[true, true, false]]
+func test_more_complex_evaluation(params=use_parameters(_more_complex_eval_params)):
+	var and_node: LogicNode = And.new()
+	var not_node: LogicNode = Not.new()
+	
+	var and_id: int = _graph.add_node(and_node)
+	var not_id: int = _graph.add_node(not_node)
+	
+	_graph.connect_nodes(_graph.INPUT_ID, 0, not_id, 0)
+	_graph.connect_nodes(not_id, 0, and_id, 0)
+	_graph.connect_nodes(_graph.INPUT_ID, 1, and_id, 1)
+	_graph.connect_nodes(and_id, 0, _graph.OUTPUT_ID, 0)
+	
+	_graph.set_input_state(0, params[0])
+	_graph.set_input_state(1, params[1])
+	
+	_graph.evaluate()
+	
+	assert_eq(_graph.get_output_state()[0], params[2])

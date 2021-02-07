@@ -40,14 +40,10 @@ func set_input_state(slot: int, state: bool):
 		_input_state[slot] = state
 
 
-# Returns the given slot's state of this graphs output node.
-# Returns false if the slot does not exist, or the graph has not
-# been evaluated yet.
-func get_output_state(slot: int) -> bool:
-	if slot >= _output_state.size():
-		return false
-	else:
-		return _output_state[slot]
+# Returns the graphs output state.
+# Returns an empty array if the graph has not been evaluated.
+func get_output_state() -> Array:
+	return _output_state
 
 
 # Evaluates the graph and records each node's output states in _graph_eval_state
