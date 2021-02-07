@@ -1,10 +1,10 @@
-extends HBoxContainer
+extends PanelContainer
 
 var Graph := preload("res://data/logic_graph.gd")
 
 var _graph: Object = null
 
-onready var _graph_ui: GraphEdit = $LogicGraphUi
+onready var _graph_ui: HSplitContainer = $LogicGraphUi
 
 # Called when the node enters the scene tree for the first time.
 func _ready():

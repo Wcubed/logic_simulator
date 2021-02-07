@@ -3,6 +3,7 @@ extends Object
 signal node_added(id)
 signal nodes_connected(from_id, from_slot, to_id, to_slot)
 signal nodes_disconnected(from_id, from_slot, to_id, to_slot)
+signal evaluated()
 
 # Node ids for the input and output nodes, which always exist.
 # Each graph has exactly 1.
@@ -50,6 +51,14 @@ func get_output_state() -> Array:
 	return _output_state
 
 
+func get_input_count():
+	return _nodes[INPUT_ID].get_outputs_amount()
+
+
+func get_output_count():
+	return _nodes[OUTPUT_ID].get_inputs_amount()
+
+
 # Evaluates the graph and records each node's output states in _graph_eval_state
 func evaluate():
 	# Todo: evaluate branches that do not end up at the output?
@@ -59,6 +68,8 @@ func evaluate():
 	_graph_eval_state[INPUT_ID] = _input_state
 	
 	_evaluate_node(OUTPUT_ID)
+	
+	emit_signal("evaluated")
 
 
 # Recursive function that evaluates the given logic node and all

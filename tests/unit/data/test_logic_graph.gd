@@ -9,6 +9,9 @@ func before_each():
 
 func test_new():
 	assert_not_null(_graph)
+	
+	assert_eq(_graph.get_input_count(), 4)
+	assert_eq(_graph.get_output_count(), 4)
 
 
 func test_get_nodes():

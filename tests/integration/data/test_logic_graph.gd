@@ -71,10 +71,13 @@ func test_connect_and_disconnect_to_output():
 
 
 func test_simple_evaluate():
+	watch_signals(_graph)
+	
 	_graph.connect_nodes(_graph.INPUT_ID, 0, _graph.OUTPUT_ID, 0)
 	
 	_graph.set_input_state(0, true)
 	_graph.evaluate()
+	assert_signal_emitted(_graph, "evaluated")
 	assert_true(_graph.get_output_state()[0])
 	
 	_graph.set_input_state(0, false)

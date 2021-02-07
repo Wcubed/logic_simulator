@@ -2,15 +2,34 @@
 
 [ext_resource path="res://scenes/logic_graph_ui.gd" type="Script" id=1]
 
-[node name="LogicGraphUi" type="GraphEdit"]
+[node name="LogicGraphUi" type="HSplitContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-right_disconnects = true
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-[connection signal="connection_request" from="." to="." method="_on_LogicGraphUi_connection_request"]
-[connection signal="disconnection_request" from="." to="." method="_on_LogicGraphUi_disconnection_request"]
+
+[node name="GraphEdit" type="GraphEdit" parent="."]
+margin_right = 1012.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+right_disconnects = true
+scroll_offset = Vector2( -4, 0 )
+
+[node name="VBoxContainer" type="HBoxContainer" parent="."]
+margin_left = 1020.0
+margin_right = 1024.0
+margin_bottom = 600.0
+
+[node name="InputButtons" type="VBoxContainer" parent="VBoxContainer"]
+margin_bottom = 600.0
+
+[node name="OutputLights" type="VBoxContainer" parent="VBoxContainer"]
+margin_left = 4.0
+margin_right = 4.0
+margin_bottom = 600.0
+[connection signal="connection_request" from="GraphEdit" to="." method="_on_GraphEdit_connection_request"]
+[connection signal="disconnection_request" from="GraphEdit" to="." method="_on_GraphEdit_disconnection_request"]
