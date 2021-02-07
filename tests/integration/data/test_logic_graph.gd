@@ -80,9 +80,15 @@ func test_simple_evaluate():
 	assert_signal_emitted(_graph, "evaluated")
 	assert_true(_graph.get_output_state()[0])
 	
+	var eval_state: Dictionary = _graph.get_eval_state()
+	# Check if the eval state works.
+	# (the output node will not be in here, which is why we test the input node)
+	assert_true(eval_state[_graph.INPUT_ID][0])
+	
 	_graph.set_input_state(0, false)
 	_graph.evaluate()
 	assert_false(_graph.get_output_state()[0])
+
 
 var _more_complex_eval_params = [
 	[false, false, false], 

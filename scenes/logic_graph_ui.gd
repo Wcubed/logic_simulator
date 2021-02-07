@@ -75,18 +75,30 @@ func _on_graph_nodes_disconnected(from: int, from_slot: int, to: int, to_slot: i
 
 
 func _on_graph_evaluated():
+	# Update the output lights.
 	var output: Array = _graph.get_output_state()
-	
 	for i in _output_lights.get_child_count():
 		_output_lights.get_child(i).pressed = output[i]
+	
+	# Update the nodes.
+	# TODO: update the inputs of the nodes.
+	var graph_state: Dictionary = _graph.get_eval_state()
+	for key in graph_state.keys():
+		var node := _graph_edit.get_node(String(key))
+		node.update_output_state(graph_state[key])
+	
+	# TODO: somehow Re-draw, so that the connecting lines also take the needed colors.
+	# (They won't automatically because low cpu mode is turned on).
 
 
 func _on_GraphEdit_connection_request(from: String, from_slot: int, to: String, to_slot: int):
 	_graph.connect_nodes(int(from), from_slot, int(to), to_slot)
+	_graph.evaluate()
 
 
 func _on_GraphEdit_disconnection_request(from: String, from_slot: int, to: String, to_slot: int):
 	_graph.disconnect_nodes(int(from), from_slot, int(to), to_slot)
+	_graph.evaluate()
 
 
 func _on_input_button_toggle(state: bool, id: int):

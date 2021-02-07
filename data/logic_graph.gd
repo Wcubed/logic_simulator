@@ -59,6 +59,12 @@ func get_output_count():
 	return _nodes[OUTPUT_ID].get_inputs_amount()
 
 
+# Returns the evaluated state.
+# Returns an empty dictionary when the graph has not been evaluated yet.
+func get_eval_state() -> Dictionary:
+	return _graph_eval_state
+
+
 # Evaluates the graph and records each node's output states in _graph_eval_state
 func evaluate():
 	# Todo: evaluate branches that do not end up at the output?

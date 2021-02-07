@@ -28,3 +28,13 @@ func update_input_output_amounts(node: LogicNode):
 		var has_output: bool = i < output_amount
 		
 		set_slot(i, has_input, 0, DISABLED_COLOR, has_output, 0, DISABLED_COLOR)
+
+
+func update_output_state(state: Array):
+	for i in state.size():
+		var color := DISABLED_COLOR
+		if state[i]:
+			color = ENABLED_COLOR
+		
+		# TODO: Make this function update both input and output states?
+		set_slot(i, is_slot_enabled_left(i), 0, get_slot_color_left(i), true, 0, color)
