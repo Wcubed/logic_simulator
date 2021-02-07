@@ -15,16 +15,82 @@ var _next_id := OUTPUT_ID + 1
 var _input_node: LogicNode = null
 var _output_node: LogicNode = null
 
+var _input_state := [false, false, false, false]
+# Dictionary of node id's to their list of output states.
+# Get's updated after `evaluate()` is called.
+var _graph_eval_state := {}
+# Updated once `evaluete()` is called.
+var _output_state := []
+
 
 func _init():
 	_input_node = LogicNode.new()
 	_output_node = LogicNode.new()
 	
+	# TODO: allow changing input and output amount.
 	_input_node.set_outputs_amount(4)
 	_output_node.set_inputs_amount(4)
 	
 	_nodes[INPUT_ID] = _input_node
 	_nodes[OUTPUT_ID] = _output_node
+
+
+func set_input_state(slot: int, state: bool):
+	if slot < _input_state.size():
+		_input_state[slot] = state
+
+
+# Returns the given slot's state of this graphs output node.
+# Returns false if the slot does not exist, or the graph has not
+# been evaluated yet.
+func get_output_state(slot: int) -> bool:
+	if slot >= _output_state.size():
+		return false
+	else:
+		return _output_state[slot]
+
+
+# Evaluates the graph and records each node's output states in _graph_eval_state
+func evaluate():
+	# Todo: evaluate branches that do not end up at the output?
+	#       only if the graph is actually shown to the user?
+	#       otherwise there is no need to evaluate dead ends.
+	_graph_eval_state = {}
+	_graph_eval_state[INPUT_ID] = _input_state
+	
+	_evaluate_node(OUTPUT_ID)
+
+
+# Recursive function that evaluates the given logic node and all
+# it's dependencies. Updates _graph_eval_state with it's findings.
+func _evaluate_node(node_id: int):
+	# TODO: detect loops?
+	#       is it even necessary to detect loops?
+	var node: LogicNode = _nodes[node_id]
+	var inputs: Array = node.get_inputs()
+	
+	var input_states := []
+	
+	for input in inputs:
+		if input == null:
+			# Not connected, always false.
+			input_states.append(false)
+			continue
+		
+		var input_id: int = input["id"]
+		
+		if not _graph_eval_state.has(input_id):
+			_evaluate_node(input_id)
+		# Now the given input state is available.
+		var input_state: bool = _graph_eval_state[input_id][input["slot"]]
+		input_states.append(input_state)
+	
+	if node_id == OUTPUT_ID:
+		# Output node does not have outputs itself.
+		_output_state = input_states
+	else:
+		var output := node.evaluate(input_states)
+		_graph_eval_state[node_id] = output
 
 
 func get_nodes():

@@ -65,3 +65,15 @@ func test_connect_and_disconnect_to_output():
 	_graph.disconnect_nodes(not_id, 0, _graph.OUTPUT_ID, 0)
 	
 	assert_eq(not_outputs[0], [])
+
+
+func test_simple_evaluate():
+	_graph.connect_nodes(_graph.INPUT_ID, 0, _graph.OUTPUT_ID, 0)
+	
+	_graph.set_input_state(0, true)
+	_graph.evaluate()
+	assert_true(_graph.get_output_state(0))
+	
+	_graph.set_input_state(0, false)
+	_graph.evaluate()
+	assert_false(_graph.get_output_state(0))
