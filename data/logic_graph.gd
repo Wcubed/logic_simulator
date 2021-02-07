@@ -121,7 +121,8 @@ func remove_node(id: int):
 
 
 # Connect the output slot of the first node, to the input slot of the second node.
-# Does nothing if either a node does not exist, or one of the slots does not exist.
+# Does nothing if either a node does not exist, one of the slots does not exist,
+# or the input slot does already have a connection.
 func connect_nodes(first_id: int, output_slot: int, second_id: int, input_slot):
 	var first_node: LogicNode = _nodes.get(first_id)
 	var second_node: LogicNode = _nodes.get(second_id)
@@ -129,6 +130,10 @@ func connect_nodes(first_id: int, output_slot: int, second_id: int, input_slot):
 	if first_node == null or second_node == null:
 		return
 	if first_node.get_outputs_amount() <= output_slot and second_node.get_inputs_amount() <= input_slot:
+		# One of the slots does not exist.
+		return
+	if second_node.get_inputs()[input_slot] != null:
+		# The given input slot is already connected.
 		return
 	
 	first_node.connect_output(output_slot, second_id, input_slot)

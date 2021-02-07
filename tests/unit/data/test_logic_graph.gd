@@ -42,3 +42,12 @@ func test_remove_node():
 	_graph.remove_node(id)
 	
 	assert_eq(_graph.get_nodes().size(), 2)
+
+
+func test_no_connecting_to_same_input_twice():
+	_graph.connect_nodes(_graph.INPUT_ID, 0, _graph.OUTPUT_ID, 0)
+	_graph.connect_nodes(_graph.INPUT_ID, 1, _graph.OUTPUT_ID, 0)
+	
+	var input_node: LogicNode = _graph._input_node
+	# Second output should not have connected.
+	assert_eq(input_node.get_outputs()[1].size(), 0)
