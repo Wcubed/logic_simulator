@@ -22,7 +22,7 @@ func _ready():
 # `input`: Array of `bool` with the state of the input connections.
 #                should have the same size as `get_inputs_amount()`.
 # `return`: Array of `bool` with the state of the outputs.
-func evaluate(input: Array) -> Array:
+func evaluate(_input: Array) -> Array:
 	return []
 
 
