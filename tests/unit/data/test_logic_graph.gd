@@ -12,4 +12,4 @@ func test_new():
 
 
 func test_get_nodes():
-	assert_eq(_graph.get_nodes(), [])
+	assert_eq(_graph.get_nodes().size(), 0)

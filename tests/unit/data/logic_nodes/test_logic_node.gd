@@ -42,74 +42,74 @@ func test_outputs_amount():
 func test_connect_nonexistent_input():
 	_logic.set_inputs_amount(1)
 	# Slot `1` does not exist.
-	_logic.connect_output(1, null, 0)
+	_logic.connect_output(1, 0, 0)
 	
 	assert_eq(_logic.get_inputs(), [null])
 
 
 func test_connect_input():
-	var other_logic := LogicNode.new()
+	var other_id := 12
 	var other_slot := 2
 	
 	_logic.set_inputs_amount(1)
-	_logic.connect_input(0, other_logic, other_slot)
+	_logic.connect_input(0, other_id, other_slot)
 	
 	var inputs := _logic.get_inputs()
-	assert_eq(inputs[0]["node"], other_logic)
+	assert_eq(inputs[0]["id"], other_id)
 	assert_eq(inputs[0]["slot"], other_slot)
 
 
 func test_connect_nonexistent_output():
 	_logic.set_outputs_amount(1)
 	# Slot `1` does not exist.
-	_logic.connect_output(1, null, 0)
+	_logic.connect_output(1, 2, 0)
 	
 	assert_eq(_logic.get_outputs(), [[]])
 
 
 func test_connect_output():
-	var other_logic := LogicNode.new()
+	var other_id := 13
 	var other_slot := 2
 	
 	_logic.set_outputs_amount(1)
-	_logic.connect_output(0, other_logic, other_slot)
+	_logic.connect_output(0, other_id, other_slot)
 	
 	var outputs := _logic.get_outputs()
 	assert_eq(outputs[0].size(), 1)
-	assert_eq(outputs[0][0]["node"], other_logic)
+	assert_eq(outputs[0][0]["id"], other_id)
 	assert_eq(outputs[0][0]["slot"], other_slot)
 	
 	# Now make another distinct connection.
 	other_slot = 1
-	_logic.connect_output(0, other_logic, other_slot)
+	_logic.connect_output(0, other_id, other_slot)
 	
 	outputs = _logic.get_outputs()
 	assert_eq(outputs[0].size(), 2)
-	assert_eq(outputs[0][1]["node"], other_logic)
+	assert_eq(outputs[0][1]["id"], other_id)
 	assert_eq(outputs[0][1]["slot"], other_slot)
 
 
 func test_make_same_output_connection_twice():
-	var other_logic := LogicNode.new()
+	var other_id := -13
 	var other_slot := 2
 	
 	_logic.set_outputs_amount(1)
-	_logic.connect_output(0, other_logic, other_slot)
+	_logic.connect_output(0, other_id, other_slot)
 	# The second call should have no effect as this connection is already made.
-	_logic.connect_output(0, other_logic, other_slot)
+	_logic.connect_output(0, other_id, other_slot)
 	
 	var outputs := _logic.get_outputs()
 	assert_eq(outputs[0].size(), 1)
-	assert_eq(outputs[0][0]["node"], other_logic)
+	assert_eq(outputs[0][0]["id"], other_id)
 	assert_eq(outputs[0][0]["slot"], other_slot)
 
 
 func test_disconnect_input():
-	var other_logic := LogicNode.new()
+	var other_id := 136
 	var other_slot := 2
 	
 	_logic.set_inputs_amount(1)
-	_logic.connect_input(0, other_logic, other_slot)
+	_logic.connect_input(0, other_id, other_slot)
 	
 	_logic.disconnect_input(0)
 	
@@ -119,13 +119,13 @@ func test_disconnect_input():
 
 
 func test_disconnect_output():
-	var other_logic := LogicNode.new()
+	var other_id := 1827
 	var other_slot := 2
 	
 	_logic.set_outputs_amount(1)
-	_logic.connect_output(0, other_logic, other_slot)
+	_logic.connect_output(0, other_id, other_slot)
 	
-	_logic.disconnect_output(0, other_logic, other_slot)
+	_logic.disconnect_output(0, other_id, other_slot)
 	
 	var outputs := _logic.get_outputs()
 	assert_eq(outputs.size(), 1)
