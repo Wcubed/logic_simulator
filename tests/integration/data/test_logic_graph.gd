@@ -33,3 +33,35 @@ func test_connect_and_disconnect_nodes():
 	
 	assert_eq(and_outputs[0].size(), 0)
 	assert_eq(not_inputs[0], null)
+
+
+func test_connect_and_disconnect_from_input():
+	var not_node: LogicNode = Not.new()
+	var not_id: int = _graph.add_node(not_node)
+	
+	_graph.connect_nodes(_graph.INPUT_ID, 0, not_id, 0)
+	
+	var not_inputs = not_node.get_inputs()
+	
+	assert_eq(not_inputs[0]["id"], _graph.INPUT_ID)
+	assert_eq(not_inputs[0]["slot"], 0)
+	
+	_graph.disconnect_nodes(_graph.INPUT_ID, 0, not_id, 0)
+	
+	assert_eq(not_inputs[0], null)
+
+
+func test_connect_and_disconnect_to_output():
+	var not_node: LogicNode = Not.new()
+	var not_id: int = _graph.add_node(not_node)
+	
+	_graph.connect_nodes(not_id, 0, _graph.OUTPUT_ID, 0)
+	
+	var not_outputs = not_node.get_outputs()
+	
+	assert_eq(not_outputs[0][0]["id"], _graph.OUTPUT_ID)
+	assert_eq(not_outputs[0][0]["slot"], 0)
+	
+	_graph.disconnect_nodes(not_id, 0, _graph.OUTPUT_ID, 0)
+	
+	assert_eq(not_outputs[0], [])

@@ -12,7 +12,8 @@ func test_new():
 
 
 func test_get_nodes():
-	assert_eq(_graph.get_nodes().size(), 0)
+	# Input and output node.
+	assert_eq(_graph.get_nodes().size(), 2)
 
 
 func test_add_node():
@@ -20,8 +21,13 @@ func test_add_node():
 	
 	var id: int = _graph.add_node(node)
 	
+	# Input and output id's are special.
+	assert_ne(id, _graph.INPUT_ID)
+	assert_ne(id, _graph.OUTPUT_ID)
+	
 	var nodes: Dictionary = _graph.get_nodes()
-	assert_eq(nodes.size(), 1)
+	# Input, output and the new node.
+	assert_eq(nodes.size(), 3)
 	assert_eq(nodes[id], node)
 
 
@@ -31,4 +37,4 @@ func test_remove_node():
 	var id: int = _graph.add_node(node)
 	_graph.remove_node(id)
 	
-	assert_eq(_graph.get_nodes().size(), 0)
+	assert_eq(_graph.get_nodes().size(), 2)

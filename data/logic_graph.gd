@@ -1,10 +1,30 @@
 extends Object
 
+# Node ids for the input and output nodes, which always exist.
+# Each graph has exactly 1.
+const INPUT_ID := 0
+const OUTPUT_ID := 1
+
 # A dictionary of id -> LogicNode.
 var _nodes := {}
 
 # Keep track of the next id to use for a new node.
-var _next_id := 0
+var _next_id := OUTPUT_ID + 1
+
+
+var _input_node: LogicNode = null
+var _output_node: LogicNode = null
+
+
+func _init():
+	_input_node = LogicNode.new()
+	_output_node = LogicNode.new()
+	
+	_input_node.set_outputs_amount(4)
+	_output_node.set_inputs_amount(4)
+	
+	_nodes[INPUT_ID] = _input_node
+	_nodes[OUTPUT_ID] = _output_node
 
 
 func get_nodes():
@@ -25,6 +45,10 @@ func add_node(node: LogicNode) -> int:
 
 func remove_node(id: int):
 	# TODO: remove connections to and from this node.
+	
+	if id == INPUT_ID or id == OUTPUT_ID:
+		# Can't remove the in or output.
+		return
 	
 	_nodes.erase(id)
 
