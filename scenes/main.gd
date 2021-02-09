@@ -12,5 +12,6 @@ func _ready():
 	
 	# Example add.
 	_graph.add_node(load("res://data/logic_nodes/logic_and.gd").new())
+	_graph.add_node(load("res://data/logic_nodes/logic_not.gd").new())
 	
 	_graph_ui.display_graph(_graph)

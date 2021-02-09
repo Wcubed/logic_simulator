@@ -89,6 +89,10 @@ func _on_graph_evaluated():
 	
 	# TODO: somehow Re-draw, so that the connecting lines also take the needed colors.
 	# (They won't automatically because low cpu mode is turned on).
+	# Somehow, having it emit `draw`, or calling `update()` does not redraw it.
+	# so we use this workaround:
+	_graph_edit.visible = false
+	_graph_edit.visible = true
 
 
 func _on_GraphEdit_connection_request(from: String, from_slot: int, to: String, to_slot: int):
