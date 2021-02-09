@@ -109,13 +109,11 @@ func _on_graph_evaluated():
 	# output states, and the output node does actually not have outputs.
 	_update_node_input_output_state(_graph.OUTPUT_ID, graph_state)
 	
-	# TODO: somehow Re-draw, so that the connecting lines also take the needed colors.
-	# (They won't automatically because low cpu mode is turned on).
-	# Somehow, having it emit `draw`, or calling `update()` does not redraw it.
-	# so we use this workaround:
-	# TODO: This workaround means disconnecting nodes goes weirdly.
-	_graph_edit.visible = false
-	_graph_edit.visible = true
+	# Update the graph line visuals.
+	# They don't update automatically, until the graph is moved / resized or
+	# one of it's graph nodes is moved.
+	# They even don't update automatically if `low-cpu-mode` is off.
+	_graph_edit.get_node("CLAYER").update()
 
 
 func _on_GraphEdit_connection_request(from: String, from_slot: int, to: String, to_slot: int):
