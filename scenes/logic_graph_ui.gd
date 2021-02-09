@@ -83,9 +83,22 @@ func _on_graph_evaluated():
 	# Update the nodes.
 	# TODO: update the inputs of the nodes.
 	var graph_state: Dictionary = _graph.get_eval_state()
+	var logic_nodes: Dictionary = _graph.get_nodes()
+	
 	for key in graph_state.keys():
-		var node := _graph_edit.get_node(String(key))
-		node.update_output_state(graph_state[key])
+		var ui_node := _graph_edit.get_node(String(key))
+		var logic_node: LogicNode = logic_nodes[key]
+		var inputs := logic_node.get_inputs()
+		
+		var input_state := []
+		for input in inputs:
+			var state := false
+			if input != null:
+				state = graph_state[input["id"]][input["slot"]]
+			
+			input_state.append(state)
+		
+		ui_node.update_input_output_state(input_state, graph_state[key])
 	
 	# TODO: somehow Re-draw, so that the connecting lines also take the needed colors.
 	# (They won't automatically because low cpu mode is turned on).
