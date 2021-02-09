@@ -66,6 +66,24 @@ func _create_node(id: int, node: LogicNode):
 	new_node.update_input_output_amounts(node)
 
 
+func _update_node_input_output_state(id: int, graph_state: Dictionary):
+	var logic_nodes: Dictionary = _graph.get_nodes()
+	
+	var ui_node := _graph_edit.get_node(String(id))
+	var logic_node: LogicNode = logic_nodes[id]
+	var inputs := logic_node.get_inputs()
+	
+	var input_state := []
+	for input in inputs:
+		var state := false
+		if input != null:
+			state = graph_state[input["id"]][input["slot"]]
+		
+		input_state.append(state)
+	
+	ui_node.update_input_output_state(input_state, graph_state.get(id, []))
+
+
 func _on_graph_nodes_connected(from: int, from_slot: int, to: int, to_slot: int):
 	_graph_edit.connect_node(String(from), from_slot, String(to), to_slot)
 
@@ -83,27 +101,19 @@ func _on_graph_evaluated():
 	# Update the nodes.
 	# TODO: update the inputs of the nodes.
 	var graph_state: Dictionary = _graph.get_eval_state()
-	var logic_nodes: Dictionary = _graph.get_nodes()
 	
 	for key in graph_state.keys():
-		var ui_node := _graph_edit.get_node(String(key))
-		var logic_node: LogicNode = logic_nodes[key]
-		var inputs := logic_node.get_inputs()
-		
-		var input_state := []
-		for input in inputs:
-			var state := false
-			if input != null:
-				state = graph_state[input["id"]][input["slot"]]
-			
-			input_state.append(state)
-		
-		ui_node.update_input_output_state(input_state, graph_state[key])
+		_update_node_input_output_state(key, graph_state)
+	
+	# Output node is not in the graph_state, because that only lists node
+	# output states, and the output node does actually not have outputs.
+	_update_node_input_output_state(_graph.OUTPUT_ID, graph_state)
 	
 	# TODO: somehow Re-draw, so that the connecting lines also take the needed colors.
 	# (They won't automatically because low cpu mode is turned on).
 	# Somehow, having it emit `draw`, or calling `update()` does not redraw it.
 	# so we use this workaround:
+	# TODO: This workaround means disconnecting nodes goes weirdly.
 	_graph_edit.visible = false
 	_graph_edit.visible = true
 
