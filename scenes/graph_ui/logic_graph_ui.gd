@@ -20,6 +20,7 @@ func display_graph(graph: Object):
 		_graph.disconnect("nodes_connected", self, "_on_graph_nodes_connected")
 		_graph.disconnect("nodes_disconnected", self, "_on_graph_nodes_disconnected")
 		_graph.disconnect("node_added", self, "_on_graph_node_added")
+		_graph.disconnect("node_removed", self, "_on_graph_node_removed")
 		_graph.disconnect("evaluated", self, "_on_graph_evaluated")
 	
 	_graph = graph
@@ -27,6 +28,7 @@ func display_graph(graph: Object):
 	_graph.connect("nodes_connected", self, "_on_graph_nodes_connected")
 	_graph.connect("nodes_disconnected", self, "_on_graph_nodes_disconnected")
 	_graph.connect("node_added", self, "_on_graph_node_added")
+	_graph.connect("node_removed", self, "_on_graph_node_removed")
 	_graph.connect("evaluated", self, "_on_graph_evaluated")
 	
 	for child in _graph_edit.get_children():
@@ -86,6 +88,16 @@ func _update_node_input_output_state(id: int, graph_state: Dictionary):
 	ui_node.update_input_output_state(input_state, graph_state.get(id, []))
 
 
+func _unhandled_input(event):
+	if event.is_action("ui_delete"):
+		# Ask the data graph to delete selected nodes.
+		for child in _graph_edit.get_children():
+			if child is GraphNode and child.is_selected():
+				_graph.remove_node(int(child.name))
+		
+		get_tree().set_input_as_handled()
+
+
 func _on_graph_nodes_connected(from: int, from_slot: int, to: int, to_slot: int):
 	_graph_edit.connect_node(String(from), from_slot, String(to), to_slot)
 
@@ -99,6 +111,12 @@ func _on_graph_node_added(id: int):
 	# TODO: is that true?
 	var nodes: Dictionary = _graph.get_nodes()
 	_create_node(id, nodes[id])
+
+
+func _on_graph_node_removed(id: int):
+	_graph_edit.get_node(String(id)).free()
+	
+	_graph.evaluate()
 
 
 func _on_graph_evaluated():

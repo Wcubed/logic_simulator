@@ -1,6 +1,7 @@
 extends Object
 
 signal node_added(id)
+signal node_removed(id)
 signal nodes_connected(from_id, from_slot, to_id, to_slot)
 signal nodes_disconnected(from_id, from_slot, to_id, to_slot)
 signal evaluated()
@@ -129,13 +130,22 @@ func add_node(node: LogicNode) -> int:
 
 
 func remove_node(id: int):
-	# TODO: remove connections to and from this node.
+	var node: LogicNode = _nodes[id]
+	var inputs := node.get_inputs()
+	var outputs := node.get_outputs()
+	
+	for slot in inputs.size():
+		disconnect_nodes(inputs[slot]["id"], inputs[slot]["slot"], id, slot)
+	for slot in outputs.size():
+		for conn in outputs[slot]:
+			disconnect_nodes(id, slot, conn["id"], conn["slot"])
 	
 	if id == INPUT_ID or id == OUTPUT_ID:
 		# Can't remove the in or output.
 		return
 	
 	_nodes.erase(id)
+	emit_signal("node_removed", id)
 
 
 # Connect the output slot of the first node, to the input slot of the second node.

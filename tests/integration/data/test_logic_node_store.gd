@@ -23,4 +23,4 @@ func test_loaded_all_default_logic_nodes():
 	assert_eq(nodes.size(), 3)
 	
 	# Check if it actually adheres to the titles.
-	assert_eq(nodes["NOT"].get_title(), "NOT")
+	assert_eq(nodes["NOT"].new().get_title(), "NOT")
