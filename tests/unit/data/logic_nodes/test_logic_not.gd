@@ -1,19 +1,19 @@
 extends "res://addons/gut/test.gd"
 
-var _not: LogicNode = null
+var _node: LogicNode = null
 
 
 func before_each():
-	_not = autofree(load("res://data/logic_nodes/logic_not.gd").new())
+	_node = autofree(load("res://data/logic_nodes/logic_not.gd").new())
 
 
 func test_new():
-	assert_not_null(_not)
+	assert_not_null(_node)
 	
-	assert_eq(_not.get_inputs_amount(), 1)
-	assert_eq(_not.get_outputs_amount(), 1)
+	assert_eq(_node.get_inputs_amount(), 1)
+	assert_eq(_node.get_outputs_amount(), 1)
 
 
 func test_evaluate():
-	assert_eq(_not.evaluate([false]), [true])
-	assert_eq(_not.evaluate([true]), [false])
+	assert_eq(_node.evaluate([false]), [true])
+	assert_eq(_node.evaluate([true]), [false])

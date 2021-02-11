@@ -113,7 +113,11 @@ func _on_graph_evaluated():
 	# They don't update automatically, until the graph is moved / resized or
 	# one of it's graph nodes is moved.
 	# They even don't update automatically if `low-cpu-mode` is off.
-	_graph_edit.get_node("CLAYER").update()
+	# We do `propagate_call` instead of calling `update` directly
+	# because one of it's children is actually the one drawing the
+	# connections. (called "CLAYER", but to make sure we dont fail when
+	# the name changes, we do it with a propagate call).
+	_graph_edit.propagate_call("update")
 
 
 func _on_GraphEdit_connection_request(from: String, from_slot: int, to: String, to_slot: int):

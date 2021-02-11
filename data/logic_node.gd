@@ -12,11 +12,6 @@ var _inputs = []
 var _outputs = []
 
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
 # Title of this node (for identification)
 # Meant to be overridden by inheriting objects.
 func get_title() -> String:

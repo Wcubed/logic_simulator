@@ -67,13 +67,15 @@ func get_eval_state() -> Dictionary:
 
 # Evaluates the graph and records each node's output states in _graph_eval_state
 func evaluate():
-	# Todo: evaluate branches that do not end up at the output?
-	#       only if the graph is actually shown to the user?
-	#       otherwise there is no need to evaluate dead ends.
 	_graph_eval_state = {}
 	_graph_eval_state[INPUT_ID] = _input_state
 	
 	_evaluate_node(OUTPUT_ID)
+	
+	# TODO: if this graph is being displayed in the ui, evaluate
+	#    even disconnected nodes, so that the user get's immediate feedback.
+	#    When the graph is not displayed, we don't need to do that, as they
+	#    don't contribute to the overall output.
 	
 	emit_signal("evaluated")
 
@@ -82,7 +84,6 @@ func evaluate():
 # it's dependencies. Updates _graph_eval_state with it's findings.
 func _evaluate_node(node_id: int):
 	# TODO: detect loops?
-	#       is it even necessary to detect loops?
 	var node: LogicNode = _nodes[node_id]
 	var inputs: Array = node.get_inputs()
 	
