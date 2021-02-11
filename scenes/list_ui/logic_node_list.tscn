@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scenes/list_ui/logic_node_list.gd" type="Script" id=1]
+
+[node name="LogicNodeList" type="ScrollContainer"]
+margin_right = 40.0
+margin_bottom = 40.0
+size_flags_vertical = 3
+scroll_horizontal_enabled = false
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
