@@ -2,7 +2,6 @@
 
 [ext_resource path="res://scenes/graph_ui/logic_node_ui.gd" type="Script" id=1]
 
-
 [node name="LogicNodeUi" type="GraphNode"]
 margin_right = 56.0
 margin_bottom = 29.0
