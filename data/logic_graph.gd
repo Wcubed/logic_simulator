@@ -24,7 +24,10 @@ var _output_node: LogicNode = null
 var _input_state := [false, false, false, false]
 # Dictionary of node id's to their list of output states.
 # Get's updated after `evaluate()` is called.
+# Does not contain the output node's state, as that one does not actually
+# have any outputs itself.
 var _graph_eval_state := {}
+# Logic states of the output node (id == OUTPUT_ID).
 # Updated once `evaluate()` is called.
 var _output_state := []
 
@@ -67,16 +70,33 @@ func get_eval_state() -> Dictionary:
 
 
 # Evaluates the graph and records each node's output states in _graph_eval_state
+# Also evaluates disconnected nodes and nodes that don't contribute to the
+# overall graph output. As this graph might be displayed to the user at any
+# time, and it needs to be consistent then.
+# And graphs that will be re-used often will most likely not have many
+# disconnected nodes in them.
 func evaluate():
 	_graph_eval_state = {}
 	_graph_eval_state[INPUT_ID] = _input_state
 	
 	_evaluate_node(OUTPUT_ID)
 	
-	# TODO: if this graph is being displayed in the ui, evaluate
-	#    even disconnected nodes, so that the user get's immediate feedback.
-	#    When the graph is not displayed, we don't need to do that, as they
-	#    don't contribute to the overall output.
+	# Now evaluate any node which does not directly contribute to the output.
+	# e.g. the ones which have no outputs connected.
+	# The recursive nature of the evaluate function will also evaluate
+	# all the nodes "upstream" of these end-nodes.
+	for id in _nodes.keys():
+		var node: LogicNode = _nodes.get(id)
+		
+		var evaluate := true
+		# Is any output in this node 
+		for output in node.get_outputs():
+			if output != []:
+				evaluate = false
+				break
+		
+		if evaluate:
+			_evaluate_node(id)
 	
 	emit_signal("evaluated")
 

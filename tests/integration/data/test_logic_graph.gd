@@ -91,7 +91,7 @@ func test_simple_evaluate():
 
 
 var _more_complex_eval_params = [
-	[false, false, false], 
+	[false, false, false],
 	[false, true, true],
 	[true, false, false],
 	[true, true, false]]
@@ -113,3 +113,20 @@ func test_more_complex_evaluation(params=use_parameters(_more_complex_eval_param
 	_graph.evaluate()
 	
 	assert_eq(_graph.get_output_state()[0], params[2])
+
+
+# Evaluating the graph should also consider nodes which outputs do not
+# connect to anything, (even when hidden)
+# as the graph might need to be displayed to the user at any time.
+# And then the state then needs to be consistent.
+func test_disconnected_node_evaluation():
+	var not_node: LogicNode = Not.new()
+	
+	var not_id: int = _graph.add_node(not_node)
+	
+	_graph.evaluate()
+	
+	var output_state: Dictionary = _graph.get_eval_state()
+	
+	assert_has(output_state, not_id)
+	assert_eq(output_state.get(not_id)[0], true)
