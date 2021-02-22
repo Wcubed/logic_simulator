@@ -91,9 +91,12 @@ func _update_node_input_output_state(id: int, graph_state: Dictionary):
 func _unhandled_input(event):
 	if event.is_action("ui_delete"):
 		# Ask the data graph to delete selected nodes.
+		var remove_ids := []
 		for child in _graph_edit.get_children():
 			if child is GraphNode and child.is_selected():
-				_graph.remove_node(int(child.name))
+				remove_ids.append(int(child.name))
+		
+		_graph.remove_nodes(remove_ids)
 		
 		get_tree().set_input_as_handled()
 

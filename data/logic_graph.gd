@@ -129,7 +129,7 @@ func add_node(node: LogicNode) -> int:
 	return id
 
 
-func remove_node(id: int):
+func remove_nodes(ids: Array):
 	# TODO: Make an integration test that removes multiple interconnected nodes.
 	#       While displaying them.
 	#       currently that tends to break on the re-evalauting that happens
@@ -137,24 +137,24 @@ func remove_node(id: int):
 	
 	# TODO: also add a test that removes nodes that don't have input connections
 	#       as this also crashed at some point.
+	for id in ids:
+		if id == INPUT_ID or id == OUTPUT_ID:
+			# Can't remove the in or output.
+			continue
+		
+		var node: LogicNode = _nodes[id]
+		var inputs := node.get_inputs()
+		var outputs := node.get_outputs()
+		
+		for slot in inputs.size():
+			if inputs[slot] != null:
+				disconnect_nodes(inputs[slot]["id"], inputs[slot]["slot"], id, slot)
+		for slot in outputs.size():
+			for conn in outputs[slot]:
+				disconnect_nodes(id, slot, conn["id"], conn["slot"])
 	
-	var node: LogicNode = _nodes[id]
-	var inputs := node.get_inputs()
-	var outputs := node.get_outputs()
-	
-	for slot in inputs.size():
-		if inputs[slot] != null:
-			disconnect_nodes(inputs[slot]["id"], inputs[slot]["slot"], id, slot)
-	for slot in outputs.size():
-		for conn in outputs[slot]:
-			disconnect_nodes(id, slot, conn["id"], conn["slot"])
-	
-	if id == INPUT_ID or id == OUTPUT_ID:
-		# Can't remove the in or output.
-		return
-	
-	_nodes.erase(id)
-	emit_signal("node_removed", id)
+		_nodes.erase(id)
+		emit_signal("node_removed", id)
 
 
 # Connect the output slot of the first node, to the input slot of the second node.
