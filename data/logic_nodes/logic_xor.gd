@@ -7,8 +7,10 @@ func _init():
 
 
 func get_title() -> String:
-	return "AND"
+	return "XOR"
 
 
 func evaluate(input: Array) -> Array:
-	return [input.find(false) == -1]
+	return [input.count(true) == 1]
+
+

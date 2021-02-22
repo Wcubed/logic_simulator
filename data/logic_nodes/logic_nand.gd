@@ -7,8 +7,9 @@ func _init():
 
 
 func get_title() -> String:
-	return "AND"
+	return "NAND"
 
 
 func evaluate(input: Array) -> Array:
-	return [input.find(false) == -1]
+	# Logic AND
+	return [input.find(false) != -1]
