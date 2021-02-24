@@ -173,13 +173,8 @@ func add_node(node: LogicNode) -> int:
 
 
 func remove_nodes(ids: Array):
-	# TODO: Make an integration test that removes multiple interconnected nodes.
-	#       While displaying them.
-	#       currently that tends to break on the re-evalauting that happens
-	#       in between the deleting of nodes.
+	var actually_removed := []
 	
-	# TODO: also add a test that removes nodes that don't have input connections
-	#       as this also crashed at some point.
 	for id in ids:
 		if id == INPUT_ID or id == OUTPUT_ID:
 			# Can't remove the in or output.
@@ -197,8 +192,9 @@ func remove_nodes(ids: Array):
 				disconnect_nodes(id, slot, conn["id"], conn["slot"])
 	
 		_nodes.erase(id)
+		actually_removed.append(id)
 	
-	emit_signal("nodes_removed", ids)
+	emit_signal("nodes_removed", actually_removed)
 
 
 # Connect the output slot of the first node, to the input slot of the second node.
