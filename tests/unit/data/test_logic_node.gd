@@ -130,3 +130,27 @@ func test_disconnect_output():
 	var outputs := _logic.get_outputs()
 	assert_eq(outputs.size(), 1)
 	assert_eq(outputs[0], [])
+
+
+func test_get_input_labels():
+	var labels: Array = _logic.get_input_labels()
+	assert_eq(labels.size(), 0)
+	
+	_logic.set_inputs_amount(2)
+	
+	labels = _logic.get_input_labels()
+	assert_eq(labels.size(), 2)
+	assert_eq(labels[0], "")
+	assert_eq(labels[1], "")
+
+func test_get_output_labels():
+	var labels: Array = _logic.get_output_labels()
+	assert_eq(labels.size(), 0)
+	
+	_logic.set_outputs_amount(3)
+	
+	labels = _logic.get_output_labels()
+	assert_eq(labels.size(), 3)
+	assert_eq(labels[0], "")
+	assert_eq(labels[1], "")
+	assert_eq(labels[2], "")

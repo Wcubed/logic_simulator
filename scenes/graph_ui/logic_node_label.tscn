@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scenes/graph_ui/logic_node_label.gd" type="Script" id=1]
+
+[node name="LogicNodeLabel" type="HBoxContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="InputLabel" type="Label" parent="."]
+margin_top = 289.0
+margin_right = 510.0
+margin_bottom = 311.0
+size_flags_horizontal = 3
+
+[node name="OutputLabel" type="Label" parent="."]
+margin_left = 514.0
+margin_top = 289.0
+margin_right = 1024.0
+margin_bottom = 311.0
+size_flags_horizontal = 3
+align = 2

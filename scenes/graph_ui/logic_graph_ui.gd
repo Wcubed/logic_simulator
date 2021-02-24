@@ -20,7 +20,7 @@ func display_graph(graph: Object):
 		_graph.disconnect("nodes_connected", self, "_on_graph_nodes_connected")
 		_graph.disconnect("nodes_disconnected", self, "_on_graph_nodes_disconnected")
 		_graph.disconnect("node_added", self, "_on_graph_node_added")
-		_graph.disconnect("node_removed", self, "_on_graph_node_removed")
+		_graph.disconnect("nodes_removed", self, "_on_graph_nodes_removed")
 		_graph.disconnect("evaluated", self, "_on_graph_evaluated")
 	
 	_graph = graph
@@ -28,7 +28,7 @@ func display_graph(graph: Object):
 	_graph.connect("nodes_connected", self, "_on_graph_nodes_connected")
 	_graph.connect("nodes_disconnected", self, "_on_graph_nodes_disconnected")
 	_graph.connect("node_added", self, "_on_graph_node_added")
-	_graph.connect("node_removed", self, "_on_graph_node_removed")
+	_graph.connect("nodes_removed", self, "_on_graph_nodes_removed")
 	_graph.connect("evaluated", self, "_on_graph_evaluated")
 	
 	for child in _graph_edit.get_children():
@@ -116,8 +116,9 @@ func _on_graph_node_added(id: int):
 	_create_node(id, nodes[id])
 
 
-func _on_graph_node_removed(id: int):
-	_graph_edit.get_node(String(id)).free()
+func _on_graph_nodes_removed(ids: Array):
+	for id in ids:
+		_graph_edit.get_node(String(id)).free()
 	
 	_graph.evaluate()
 

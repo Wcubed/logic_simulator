@@ -1,7 +1,7 @@
 extends Object
 
 signal node_added(id)
-signal node_removed(id)
+signal nodes_removed(ids)
 signal nodes_connected(from_id, from_slot, to_id, to_slot)
 signal nodes_disconnected(from_id, from_slot, to_id, to_slot)
 signal evaluated()
@@ -27,6 +27,7 @@ var _input_state := [false, false, false, false]
 # Does not contain the output node's state, as that one does not actually
 # have any outputs itself.
 var _graph_eval_state := {}
+
 # Logic states of the output node (id == OUTPUT_ID).
 # Updated once `evaluate()` is called.
 var _output_state := []
@@ -76,10 +77,14 @@ func get_eval_state() -> Dictionary:
 # And graphs that will be re-used often will most likely not have many
 # disconnected nodes in them.
 func evaluate():
+	# Remember the previous evaluation,
+	# to use as input for evaluating looped nodes.
+	var previous_eval_state := _graph_eval_state
+	
 	_graph_eval_state = {}
 	_graph_eval_state[INPUT_ID] = _input_state
 	
-	_evaluate_node(OUTPUT_ID)
+	_evaluate_node(OUTPUT_ID, previous_eval_state)
 	
 	# Now evaluate any node which does not directly contribute to the output.
 	# e.g. the ones which have no outputs connected.
@@ -96,14 +101,20 @@ func evaluate():
 				break
 		
 		if evaluate:
-			_evaluate_node(id)
+			_evaluate_node(id, previous_eval_state)
 	
 	emit_signal("evaluated")
 
 
 # Recursive function that evaluates the given logic node and all
 # it's dependencies. Updates _graph_eval_state with it's findings.
-func _evaluate_node(node_id: int):
+# The previous_states dictionary is a copy of _graph_eval_state before it was
+# cleared for this evaluation. Used as input when evaluating loops.
+# The pending_nodes Dictionary is actaully a Set of id's, used to detect
+# looped nodes.
+func _evaluate_node(node_id: int, previous_states: Dictionary, pending_nodes: Dictionary = {}):
+	pending_nodes[node_id] = null
+	
 	# TODO: detect loops?
 	var node: LogicNode = _nodes[node_id]
 	var inputs: Array = node.get_inputs()
@@ -117,11 +128,21 @@ func _evaluate_node(node_id: int):
 			continue
 		
 		var input_id: int = input["id"]
+		var input_slot: int = input["slot"]
+		var input_state := false
 		
-		if not _graph_eval_state.has(input_id):
-			_evaluate_node(input_id)
-		# Now the given input state is available.
-		var input_state: bool = _graph_eval_state[input_id][input["slot"]]
+		if pending_nodes.has(input_id):
+			# If the node is already pending it means we are in a loop.
+			# To break the loop we will use that node's last output.
+			var output_states: Array = previous_states.get(input_id, [])
+			if output_states.size() > input_slot:
+				input_state = output_states[input_slot]
+		else:
+			if not _graph_eval_state.has(input_id):
+				_evaluate_node(input_id, previous_states, pending_nodes)
+			# Now the given input state is available.
+			input_state = _graph_eval_state[input_id][input_slot]
+		
 		input_states.append(input_state)
 	
 	if node_id == OUTPUT_ID:
@@ -130,6 +151,8 @@ func _evaluate_node(node_id: int):
 	else:
 		var output := node.evaluate(input_states)
 		_graph_eval_state[node_id] = output
+	
+	pending_nodes.erase(node_id)
 
 
 func get_nodes():
@@ -174,7 +197,8 @@ func remove_nodes(ids: Array):
 				disconnect_nodes(id, slot, conn["id"], conn["slot"])
 	
 		_nodes.erase(id)
-		emit_signal("node_removed", id)
+	
+	emit_signal("nodes_removed", ids)
 
 
 # Connect the output slot of the first node, to the input slot of the second node.

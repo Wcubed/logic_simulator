@@ -4,6 +4,9 @@ const DISABLED_COLOR := Color(0.5, 0.5, 0.5)
 const ENABLED_COLOR := Color(1.0, 0.1, 0.1)
 
 
+var LogicNodeLabel := preload("logic_node_label.tscn")
+
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	pass # Replace with function body.
@@ -21,11 +24,20 @@ func update_input_output_amounts(node: LogicNode):
 	var output_amount := node.get_outputs_amount()
 	var max_amount: int = max(input_amount, output_amount)
 	
+	var input_labels := node.get_input_labels()
+	var output_labels := node.get_output_labels()
+	
 	for i in max_amount:
-		add_child(Label.new())
+		var labels: Control = LogicNodeLabel.instance()
+		add_child(labels)
 		
 		var has_input: bool = i < input_amount
 		var has_output: bool = i < output_amount
+		
+		if has_input:
+			labels.set_input_label(input_labels[i])
+		if has_output:
+			labels.set_output_label(output_labels[i])
 		
 		set_slot(i, has_input, 0, DISABLED_COLOR, has_output, 0, DISABLED_COLOR)
 

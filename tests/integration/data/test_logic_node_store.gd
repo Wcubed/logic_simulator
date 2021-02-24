@@ -20,7 +20,7 @@ func test_loaded_all_default_logic_nodes():
 	_store.load_logic_nodes("res://data/logic_nodes/")
 	var nodes: Dictionary = _store.get_logic_nodes()
 	
-	var EXPECTED_NODE_AMOUNT := 5
+	var EXPECTED_NODE_AMOUNT := 6
 	assert_eq(nodes.size(), EXPECTED_NODE_AMOUNT)
 	
 	# Check if it actually adheres to the titles.

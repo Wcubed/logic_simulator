@@ -80,6 +80,7 @@ func get_inputs() -> Array:
 	return _inputs
 
 
+
 func connect_output(slot: int, node_id: int, other_slot: int):
 	if slot >= get_outputs_amount():
 		return
@@ -107,3 +108,20 @@ func disconnect_output(slot: int, node_id: int, other_slot: int):
 
 func get_outputs() -> Array:
 	return _outputs
+
+
+# Returns a list with a label string for each input.
+# May be overridden by sub classes.
+func get_input_labels() -> Array:
+	var labels := []
+	for i in get_inputs_amount():
+		labels.append("")
+	return labels
+
+# Returns a list with a label label for each input.
+# May be overridden by sub classes.
+func get_output_labels() -> Array:
+	var labels := []
+	for i in get_outputs_amount():
+		labels.append("")
+	return labels

@@ -38,14 +38,14 @@ func test_add_node():
 	assert_eq(nodes[id], node)
 
 
-func test_remove_node():
+func test_remove_nodes():
 	watch_signals(_graph)
 	var node := LogicNode.new()
 	
 	var id: int = _graph.add_node(node)
 	_graph.remove_nodes([id])
 	
-	assert_signal_emitted_with_parameters(_graph, "node_removed", [id])
+	assert_signal_emitted_with_parameters(_graph, "nodes_removed", [[id]])
 	assert_eq(_graph.get_nodes().size(), 2)
 	
 	# Should not be able to remove input and output.

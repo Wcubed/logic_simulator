@@ -130,3 +130,30 @@ func test_disconnected_node_evaluation():
 	
 	assert_has(output_state, not_id)
 	assert_eq(output_state.get(not_id)[0], true)
+
+
+func test_loop_evaluation():
+	var not_node: LogicNode = Not.new()
+	var and_node: LogicNode = And.new()
+	
+	var and_id: int = _graph.add_node(and_node)
+	var not_id: int = _graph.add_node(not_node)
+	
+	# Connect the output of the AND to the input of the NOT,
+	# and the output of the NOT to both inputs of the AND.
+	# This should form an oscillating loop.
+	_graph.connect_nodes(and_id, 0, not_id, 0)
+	_graph.connect_nodes(not_id, 0, and_id, 0)
+	_graph.connect_nodes(not_id, 0, and_id, 1)
+	
+	_graph.connect_nodes(not_id, 0, _graph.OUTPUT_ID, 0)
+	
+	# Infinite osccilation should occur.
+	_graph.evaluate()
+	assert_eq(_graph.get_output_state()[0], true)
+	_graph.evaluate()
+	assert_eq(_graph.get_output_state()[0], false)
+	_graph.evaluate()
+	assert_eq(_graph.get_output_state()[0], true)
+	_graph.evaluate()
+	assert_eq(_graph.get_output_state()[0], false)
